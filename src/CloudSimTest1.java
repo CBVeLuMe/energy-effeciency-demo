@@ -1,6 +1,8 @@
 import java.util.*;
 
+import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.Datacenter;
+import org.cloudbus.cloudsim.DatacenterBroker;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Pe;
@@ -19,6 +21,12 @@ import org.cloudbus.cloudsim.provisioners.*;
  *     100 GB storage
  *     1 MPBS network bandwidth
  * One data center broker
+ * 40 Cloudlets (tasks/workload)
+ *    4000 length instructions
+ *    300 KB input file size
+ *    400 KB output file size
+ *    1 core CPU
+ *    Utilization mode to full
  * 
  * @author CBVeLuMe
  */
@@ -32,8 +40,14 @@ public class CloudSimTest1 {
 		// TODO Create the data center and define the the policies for the allocating and scheduling
 		Datacenter datacenter = CreateDataCenter();
 		// TODO Create the data center broker
-		
-		// TODO Create Cloudlets
+		DatacenterBroker datacenterBroker = CreateDataCenterBroker();
+		// TODO Create Cloudlet
+		int cloudletId = 1;
+		long cloudletLength;
+		int pesNumber;
+		long cloudletFileSize;
+		long cloudletOutputSize;
+		//Cloudlet cloudlet = new Cloudlet(cloudletId, numUser, numUser, numUser, numUser, null, null, null, traceFlag, null)
 		// TODO Create Virtual Machines and define the Procedure for task scheduling algorithm
 		// TODO Implement the Power classes
 		// TODO Test the demo and Print the result
@@ -95,5 +109,20 @@ public class CloudSimTest1 {
 		}
 		return datacenter;
 	}
+	
+	private static DatacenterBroker CreateDataCenterBroker() {
+		DatacenterBroker datacenterBroker = null;
+		try {
+			datacenterBroker = new DatacenterBroker("DatacenterBroker0");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return datacenterBroker;
+	}
 
+	private static Cloudlet CreateCloudlets() {
+		Cloudlet cloudlet = null;
+		return cloudlet;
+	}
 }
