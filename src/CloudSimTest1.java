@@ -7,6 +7,8 @@ import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Pe;
 import org.cloudbus.cloudsim.Storage;
+import org.cloudbus.cloudsim.UtilizationModel;
+import org.cloudbus.cloudsim.UtilizationModelFull;
 import org.cloudbus.cloudsim.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.core.CloudSim;
@@ -22,11 +24,17 @@ import org.cloudbus.cloudsim.provisioners.*;
  *     1 MPBS network bandwidth
  * One data center broker
  * 40 Cloudlets (tasks/workload)
- *    4000 length instructions
- *    300 KB input file size
- *    400 KB output file size
- *    1 core CPU
- *    Utilization mode to full
+ *     4000 length instructions
+ *     300 KB input file size
+ *     400 KB output file size
+ *     1 core CPU
+ *     Utilization mode to full
+ * 10 virtual machines
+ *     20 GB storage disk
+ *     2 GB RAM
+ *     1 vCPU with 1000 MIPS CPU speed
+ *     1000 KBITS/s bandwidth
+ *     Timeshared scheduler for Cloudlets execution
  * 
  * @author CBVeLuMe
  */
@@ -42,12 +50,22 @@ public class CloudSimTest1 {
 		// TODO Create the data center broker
 		DatacenterBroker datacenterBroker = CreateDataCenterBroker();
 		// TODO Create Cloudlet
-		int cloudletId = 1;
-		long cloudletLength;
-		int pesNumber;
-		long cloudletFileSize;
-		long cloudletOutputSize;
-		//Cloudlet cloudlet = new Cloudlet(cloudletId, numUser, numUser, numUser, numUser, null, null, null, traceFlag, null)
+		List<Cloudlet> cloudletList = new ArrayList<Cloudlet>();
+		long cloudletLength = 40000;
+		int pesNumber = 1;
+		long cloudletFileSize = 300;
+		long cloudletOutputSize = 400;
+		UtilizationModel utilizationModelCpu = new UtilizationModelFull();
+		UtilizationModel utilizationModelRam = new UtilizationModelFull();
+		UtilizationModel utilizationModelBw = new UtilizationModelFull();
+		for (int cloudletId = 0; cloudletId < 40; cloudletId++) {
+			Cloudlet cloudlet = new Cloudlet(cloudletId, cloudletLength, pesNumber, cloudletFileSize, cloudletOutputSize,
+					utilizationModelCpu, utilizationModelRam, utilizationModelBw);
+			cloudlet.setUserId(datacenterBroker.getId());
+			cloudletList.add(cloudlet);
+		}
+		
+
 		// TODO Create Virtual Machines and define the Procedure for task scheduling algorithm
 		// TODO Implement the Power classes
 		// TODO Test the demo and Print the result
@@ -59,14 +77,10 @@ public class CloudSimTest1 {
 		//One PE with 1000 Mips
 		PeProvisionerSimple peProvisioner = new PeProvisionerSimple(1000);
 		////Four 1000 MIPS PEs
-		Pe core0 = new Pe(0, peProvisioner);
-		Pe core1 = new Pe(1, peProvisioner);
-		Pe core2 = new Pe(2, peProvisioner);
-		Pe core3 = new Pe(3, peProvisioner);
-		peList.add(core0);
-		peList.add(core1);
-		peList.add(core2);
-		peList.add(core3);
+		for (int id = 0; id < 4; id++) {
+			Pe core = new Pe(id, peProvisioner);
+			peList.add(core);
+		}
 		//Initialize the hosts
 		List<Host> hostList = new ArrayList<Host>();
 		//8 GB RAM
@@ -75,18 +89,11 @@ public class CloudSimTest1 {
 		int bw = 1000;
 		//100 GB storage
 		long storage = 100000;
-		Host host0 = new Host(0, new RamProvisionerSimple(ram), new BwProvisionerSimple(bw), storage, peList,
-				new VmSchedulerSpaceShared(peList));
-		Host host1 = new Host(1, new RamProvisionerSimple(ram), new BwProvisionerSimple(bw), storage, peList,
-				new VmSchedulerSpaceShared(peList));
-		Host host2 = new Host(2, new RamProvisionerSimple(ram), new BwProvisionerSimple(bw), storage, peList,
-				new VmSchedulerSpaceShared(peList));
-		Host host3 = new Host(3, new RamProvisionerSimple(ram), new BwProvisionerSimple(bw), storage, peList,
-				new VmSchedulerSpaceShared(peList));
-		hostList.add(host0);
-		hostList.add(host1);
-		hostList.add(host2);
-		hostList.add(host3);
+		for (int id = 0; id < 4; id++) {
+			Host host = new Host(id, new RamProvisionerSimple(ram), new BwProvisionerSimple(bw), storage, peList,
+					new VmSchedulerSpaceShared(peList));
+			hostList.add(host);
+		}
 		//Initialize the data center
 		String architecture = "x64";
 		String os = "Kelly Linux";
