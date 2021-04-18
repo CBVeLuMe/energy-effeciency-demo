@@ -1,6 +1,8 @@
 import java.util.*;
 
 import org.cloudbus.cloudsim.Cloudlet;
+import org.cloudbus.cloudsim.CloudletScheduler;
+import org.cloudbus.cloudsim.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.Datacenter;
 import org.cloudbus.cloudsim.DatacenterBroker;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
@@ -9,11 +11,11 @@ import org.cloudbus.cloudsim.Pe;
 import org.cloudbus.cloudsim.Storage;
 import org.cloudbus.cloudsim.UtilizationModel;
 import org.cloudbus.cloudsim.UtilizationModelFull;
+import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.provisioners.*;
-
 
 /**
  * A testing Class of CloudSim for energy detector purpose.
@@ -64,9 +66,23 @@ public class CloudSimTest1 {
 			cloudlet.setUserId(datacenterBroker.getId());
 			cloudletList.add(cloudlet);
 		}
-		
-
 		// TODO Create Virtual Machines and define the Procedure for task scheduling algorithm
+		List<Vm> vmList = new ArrayList<Vm>();
+		int userId = 0;
+		double mips = 1000;
+		int numberOfPes = 1;
+		int ram = 2000;
+		long bandwidth = 1000;
+		long diskSize = 20000;
+		String vmm = "XEN";
+		CloudletScheduler cloudletScheduler = new CloudletSchedulerTimeShared();
+		for (int id = 0; id < 10; id++) {
+			Vm virtualMachine = new Vm(id, datacenterBroker.getId(), mips, numberOfPes, ram, bandwidth, diskSize, vmm,
+					cloudletScheduler);
+			vmList.add(virtualMachine);
+		}
+		datacenterBroker.submitCloudletList(cloudletList);
+		datacenterBroker.submitVmList(vmList);
 		// TODO Implement the Power classes
 		// TODO Test the demo and Print the result
 	}
