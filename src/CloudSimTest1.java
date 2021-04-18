@@ -7,6 +7,7 @@ import org.cloudbus.cloudsim.Datacenter;
 import org.cloudbus.cloudsim.DatacenterBroker;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.Host;
+import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Pe;
 import org.cloudbus.cloudsim.Storage;
 import org.cloudbus.cloudsim.UtilizationModel;
@@ -53,6 +54,7 @@ public class CloudSimTest1 {
 		DatacenterBroker datacenterBroker = CreateDataCenterBroker();
 		// TODO Create Cloudlet
 		List<Cloudlet> cloudletList = new ArrayList<Cloudlet>();
+		//Try to set the random number for the cloudlet length
 		long cloudletLength = 40000;
 		int pesNumber = 1;
 		long cloudletFileSize = 300;
@@ -84,7 +86,16 @@ public class CloudSimTest1 {
 		datacenterBroker.submitCloudletList(cloudletList);
 		datacenterBroker.submitVmList(vmList);
 		// TODO Implement the Power classes
+		CloudSim.startSimulation();
+		List<Cloudlet> finalCloudletExecutionResults = datacenterBroker.getCloudletReceivedList();
+		CloudSim.stopSimulation();
 		// TODO Test the demo and Print the result
+		for (Cloudlet cloudlet : finalCloudletExecutionResults) {
+			Log.printLine("Cloudlet: " + cloudlet.getCloudletId() + " VM: " + cloudlet.getVmId() + 
+					" Status: " + cloudlet.getStatus() + " Execution Time: " + cloudlet.getActualCPUTime() + 
+					" Start Time " + cloudlet.getExecStartTime() + " Finished Time: " + cloudlet.getFinishTime());
+			Log.printLine("----------------------------------------------------------------------------------------------------");
+		}
 	}
 
 	private static Datacenter CreateDataCenter() {
